@@ -2,6 +2,8 @@ import pygame
 
 from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
 from dino_runner.components.dinosaur import Dinosaur
+from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
+from dino_runner.components.cloud import CLOUD
 
 class Game:
     def __init__(self):
@@ -14,7 +16,11 @@ class Game:
         self.game_speed = 20
         self.x_pos_bg = 0
         self.y_pos_bg = 380
+        self.x_pos_cloud = 0
+        self.y_pos_cloud = 100
+        self.cloud_speed = 10
         self.player = Dinosaur()
+        self.obstcle_manager = ObstacleManager()
 
     def run(self):
         # Game loop: events - update - draw
@@ -33,12 +39,17 @@ class Game:
     def update(self):
         user_input = pygame.key.get_pressed()
         self.player.update(user_input)
+        self.obstcle_manager.update(self.game_speed, self.player)
+        if self.player.dino_dead:
+            self.playing = False
 
     def draw(self):
         self.clock.tick(FPS)
         self.screen.fill((255, 255, 255))
         self.draw_background()
+        self.draw_clouds()
         self.player.draw(self.screen)
+        self.obstcle_manager.draw (self.screen)
         pygame.display.update()
         pygame.display.flip()
 
@@ -50,3 +61,13 @@ class Game:
             self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
             self.x_pos_bg = 0
         self.x_pos_bg -= self.game_speed
+
+    def draw_clouds(self):
+        image_width = CLOUD.get_width() 
+        self.screen.blit(CLOUD, (self.x_pos_cloud, self.y_pos_cloud))
+        if self.x_pos_cloud <= -image_width:
+            self.screen.blit(CLOUD, (image_width + self.x_pos_cloud, self.y_pos_cloud))
+            self.x_pos_cloud = 1000
+        self.x_pos_cloud -= self.cloud_speed    
+
+    
