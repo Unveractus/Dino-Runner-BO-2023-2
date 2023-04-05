@@ -13,7 +13,7 @@ class Bird (Obstacle):
         self.image = BIRD[0]
         self.bird_rect = self.image.get_rect()
         self.bird_rect.x = self.X_POS
-        self.bird_rect.y = self.Y_POS
+        self.bird_rect.y = random.randint(125, 300)
         self.fly_index = 0
         self.bird_fly = True
         super().__init__(self.image)

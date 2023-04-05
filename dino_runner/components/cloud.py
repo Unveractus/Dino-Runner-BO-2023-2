@@ -17,7 +17,7 @@ class Cloud:
         self.XPOS -= self.speed
         if self.XPOS < -self.image_width:
             self.XPOS = SCREEN_WIDTH + self.image_width
-            self.YPOS = random.randint (100, 100)
+            self.YPOS = random.randint (100, 90)
 
     def draw(self, screen):
         screen.blit(self.image,(self.XPOS, self.YPOS))
