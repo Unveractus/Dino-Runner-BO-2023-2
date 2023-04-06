@@ -18,7 +18,11 @@ class Obstacle:
               player.reset()
              elif not player.shield:
               pygame.time.delay(300)
+              print("muere dead")
+              player.die()
+              pygame.time.delay(1000)
               player.dino_dead = True
+              
              
 
     def draw(self, screen):

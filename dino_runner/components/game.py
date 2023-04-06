@@ -1,6 +1,6 @@
 import pygame
 
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, MUSIC
+from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, MUSIC, DEAD
 from dino_runner.components.dinosaur import Dinosaur
 from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
 from dino_runner.components.cloud import CLOUD
@@ -84,6 +84,7 @@ class Game:
                 self.playing = False
                 self.death_count += 1
 
+
     def draw(self):
       if self.paused == False:
         self.clock.tick(FPS)
@@ -95,11 +96,12 @@ class Game:
             self.player.draw(self.screen)
             self.draw_score()
             self.draw_power_time(self.player)
+            self.draw_coins(self.player)
             self.obstcle_manager.draw (self.screen)
             self.power_up_manager.draw(self.screen)
             self.coin_manager.draw(self.screen)
         else:
-          self.draw_menu()
+          self.draw_menu(self.player)
         pygame.display.update()
         pygame.display.flip()
 
@@ -119,6 +121,10 @@ class Game:
             self.screen.blit(CLOUD, (image_width + self.x_pos_cloud, self.y_pos_cloud))
             self.x_pos_cloud = 1000
         self.x_pos_cloud -= self.cloud_speed    
+    
+    def draw_coins(self, player):
+        coins, coins_rect = text_utils.get_message('Coins:' + str(player.coins), 20, 1000, 70)
+        self.screen.blit(coins, coins_rect)
 
     def draw_score(self):
         score, score_rect = text_utils.get_message('Points:' + str(self.points), 20, 1000, 40)
@@ -129,20 +135,24 @@ class Game:
          poweruptext, power_rect = text_utils.get_message('PowerTime: ' + str(player.time_to_show), 50, 200, 40)
          self.screen.blit(poweruptext, power_rect)    
 
-    def draw_menu (self):
+    def draw_menu (self, player):
         white_color = (255, 255, 255) 
         self.screen.fill(white_color)
-        self.print_menu_element()
+        self.print_menu_element(player)
 
-    def print_menu_element(self):
+    def print_menu_element(self, player):
         if self.death_count == 0:
          text, text_rect = text_utils.get_message('Prees any key to start', 30)   
          self.screen.blit(text, text_rect)
         else:
          text, text_rect = text_utils.get_message('Prees any key to restart', 30)   
          score, score_rect = text_utils.get_message('Your score is: ' + str(self.points), 30, height= SCREEN_HEIGHT // 2 + 50)   
+         coins, coins_rect = text_utils.get_message('You collected: ' + str(player.coins) + ' dinocoins', 30, height= SCREEN_HEIGHT // 2 + 100 )   
+
          self.screen.blit(text, text_rect)
          self.screen.blit(score, score_rect)
+         self.screen.blit(coins, coins_rect)
+
     
     def reset(self):
         self.game_speed = 20

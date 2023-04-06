@@ -1,6 +1,6 @@
 import pygame
 from dino_runner.utils.constants import (RUNNING, RUNNING_SHIELD, DUCKING, DUCKING_SHIELD, JUMPING, JUMPING_SHIELD,
-DEFAULT_TYPE, SHIELD_TYPE, HAMMER_TYPE, RUNNING_HAMMER, JUMPING_HAMMER, DUCKING_HAMMER)
+DEFAULT_TYPE, SHIELD_TYPE, HAMMER_TYPE, RUNNING_HAMMER, JUMPING_HAMMER, DUCKING_HAMMER, DEAD)
 
 class Dinosaur:
     X_POS = 80
@@ -33,6 +33,9 @@ class Dinosaur:
         self.time_to_show = 0
 
     def update(self, user_input):
+        if  self.dino_run == False and self.dino_duck == False and self.dino_jump == False :
+            self.die()
+
         if self.dino_jump:
             self.jump()
         if self.dino_duck:
@@ -94,6 +97,21 @@ class Dinosaur:
             self.dino_jump = False
             self.jump_vel = self.JUMP_VEL
     
+
+    def die(self):
+        print("si invoca")
+        self.image = DEAD[0]    
+        self.dino_rect = self.image.get_rect()
+        self.dino_rect.x = self.X_POS
+        self.dino_rect.y = self.Y_POS        
+        self.shield = False
+        self.hammer = False
+        self.time_up_power_up = 0
+        pygame.time.delay(300)
+        
+        
+
+
     def set_power_up(self, power_up):
         self.type = power_up.type
         if self.type == SHIELD_TYPE:
