@@ -28,14 +28,21 @@ class Game:
         self.power_up_manager = PowerUpManager()
         self.points = 0
         self.death_count = 0
+        self.paused = False
 
     def run(self):
         # Game loop: events - update - draw
         self.running = True
         while self.running:
-            self.events()
-            self.update()
-            self.draw()
+            if self.paused == False:
+                self.events()
+                self.update()
+                self.draw()
+            else:
+               
+               event = pygame.event.wait()
+               if event.type == pygame.KEYDOWN:
+                  self.paused = False
         pygame.quit()
 
     def events(self):
@@ -52,24 +59,30 @@ class Game:
     def update(self):
       if self.playing:
         user_input = pygame.key.get_pressed()
-        self.player.update(user_input)
-        self.obstcle_manager.update(self.game_speed, self.player)
-        self.power_up_manager.update(self.game_speed, self.points, self.player)
-        self.points += 1
-        if self.points % 200 == 0:
-            self.game_speed += 1 
-        if self.player.dino_dead:
-            self.playing = False
-            self.death_count += 1
+        if user_input[pygame.K_p] and self.paused == False:
+           self.paused = True
+        else:
+            self.player.update(user_input)
+            self.obstcle_manager.update(self.game_speed, self.player)
+            self.power_up_manager.update(self.game_speed, self.points, self.player)
+            self.points += 1
+            if self.points % 200 == 0:
+                self.game_speed += 2 
+            if self.player.dino_dead:
+                self.playing = False
+                self.death_count += 1
 
     def draw(self):
+      if self.paused == False:
         self.clock.tick(FPS)
         self.screen.fill((255, 255, 255))
+      
         if self.playing:
             self.draw_background()
             self.draw_clouds()
             self.player.draw(self.screen)
-            self.dras_score()
+            self.draw_score()
+            self.draw_power_time(self.player)
             self.obstcle_manager.draw (self.screen)
             self.power_up_manager.draw(self.screen)
         else:
@@ -94,9 +107,14 @@ class Game:
             self.x_pos_cloud = 1000
         self.x_pos_cloud -= self.cloud_speed    
 
-    def dras_score(self):
+    def draw_score(self):
         score, score_rect = text_utils.get_message('Points:' + str(self.points), 20, 1000, 40)
         self.screen.blit(score, score_rect)
+
+    def draw_power_time(self, player):
+        if player.shield:
+         poweruptext, power_rect = text_utils.get_message('PowerTime:' + str(player.time_to_show), 20, 100, 40)
+         self.screen.blit(poweruptext, power_rect)    
 
     def draw_menu (self):
         white_color = (255, 255, 255) 
@@ -109,7 +127,7 @@ class Game:
          self.screen.blit(text, text_rect)
         else:
          text, text_rect = text_utils.get_message('Prees any key to restart', 30)   
-         score, score_rect = text_utils.get_message('Your score is:' + str(self.points), 30, height= SCREEN_HEIGHT // 2 + 50)   
+         score, score_rect = text_utils.get_message('Your score is: ' + str(self.points), 30, height= SCREEN_HEIGHT // 2 + 50)   
          self.screen.blit(text, text_rect)
          self.screen.blit(score, score_rect)
     

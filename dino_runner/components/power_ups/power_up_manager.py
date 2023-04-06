@@ -20,7 +20,6 @@ class PowerUpManager:
                 self.power_ups.append(Hammer())
                 self.isShield = False
                 self.isHammer = True
-        #self.power_ups.append(Hammer())
         
       for power_up in self.power_ups:
          if power_up.used or power_up.rect.x < -power_up.rect.width:
@@ -31,10 +30,6 @@ class PowerUpManager:
             player.set_power_up(power_up)
            
          power_up.update(game_speed, player)
-        
-      # for power_up in self.power_ups:
-      #   if power_up.used or power_up.
-
 
         
 

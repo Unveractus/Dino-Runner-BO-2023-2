@@ -24,12 +24,10 @@ class ObstacleManager:
                 self.isCactus = False
                 self.isBird = True
         
-        # if self.isBird == True:
-        #     print("bird")
-        #     self.obstacles[0].fly()
-
         for obstacle in self.obstacles:
-            if obstacle.rect.x < -obstacle.rect.width:
+            if obstacle.isHitHammer:
+                self.obstacles.pop()
+            elif obstacle.rect.x < -obstacle.rect.width:
                 self.obstacles.pop()
             obstacle.update(game_speed, player)
 
