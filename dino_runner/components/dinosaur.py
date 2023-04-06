@@ -27,6 +27,7 @@ class Dinosaur:
         self.jump_vel = self.JUMP_VEL
         self.dino_dead = False
         self.time_up_power_up = 0
+        self.coins = 0
         self.shield = False
         self.hammer = False
         self.time_to_show = 0

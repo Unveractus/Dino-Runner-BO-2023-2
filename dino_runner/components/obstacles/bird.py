@@ -19,7 +19,7 @@ class Bird (Obstacle):
         self.fly()
         if self.fly_index >= 10:
             self.fly_index = 0
-        return super().update(game_speed, player)
+        return super().update(game_speed + 5, player)
      
    def fly(self):
       #print(self.fly_index)

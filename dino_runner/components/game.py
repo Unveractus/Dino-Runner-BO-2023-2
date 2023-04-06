@@ -1,12 +1,18 @@
 import pygame
 
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
+from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, MUSIC
 from dino_runner.components.dinosaur import Dinosaur
 from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
 from dino_runner.components.cloud import CLOUD
 from dino_runner.components.power_ups.power_up_manager import PowerUpManager
+from dino_runner.components.coins.coin_manager import CoinManager
 
 from dino_runner.components import text_utils
+
+pygame.init()
+pygame.mixer.init()
+pygame.mixer.music.load(MUSIC)
+pygame.mixer.music.play(-1)
 
 class Game:
     def __init__(self):
@@ -26,6 +32,7 @@ class Game:
         self.player = Dinosaur()
         self.obstcle_manager = ObstacleManager()
         self.power_up_manager = PowerUpManager()
+        self.coin_manager = CoinManager()
         self.points = 0
         self.death_count = 0
         self.paused = False
@@ -39,7 +46,8 @@ class Game:
                 self.update()
                 self.draw()
             else:
-               
+               text, text_rect = text_utils.get_message('Prees any key to start', 30)   
+               self.screen.blit(text, text_rect)
                event = pygame.event.wait()
                if event.type == pygame.KEYDOWN:
                   self.paused = False
@@ -60,11 +68,15 @@ class Game:
       if self.playing:
         user_input = pygame.key.get_pressed()
         if user_input[pygame.K_p] and self.paused == False:
+           
+           text, text_rect = text_utils.get_message('Prees any key to start', 30)   
+           self.screen.blit(text, text_rect)
            self.paused = True
         else:
             self.player.update(user_input)
             self.obstcle_manager.update(self.game_speed, self.player)
             self.power_up_manager.update(self.game_speed, self.points, self.player)
+            self.coin_manager.update(self.game_speed,self.points,self.player)
             self.points += 1
             if self.points % 200 == 0:
                 self.game_speed += 2 
@@ -85,6 +97,7 @@ class Game:
             self.draw_power_time(self.player)
             self.obstcle_manager.draw (self.screen)
             self.power_up_manager.draw(self.screen)
+            self.coin_manager.draw(self.screen)
         else:
           self.draw_menu()
         pygame.display.update()
@@ -113,7 +126,7 @@ class Game:
 
     def draw_power_time(self, player):
         if player.shield:
-         poweruptext, power_rect = text_utils.get_message('PowerTime:' + str(player.time_to_show), 20, 100, 40)
+         poweruptext, power_rect = text_utils.get_message('PowerTime: ' + str(player.time_to_show), 50, 200, 40)
          self.screen.blit(poweruptext, power_rect)    
 
     def draw_menu (self):
