@@ -11,17 +11,17 @@ class Bird (Obstacle):
 
    def __init__(self):
         self.image = BIRD[0]
-        self.bird_rect = self.image.get_rect()
-        self.bird_rect.x = self.X_POS
-        self.bird_rect.y = random.randint(125, 300)
-        self.fly_index = 0
-        self.bird_fly = True
         super().__init__(self.image)
+        self.rect.y = random.randrange(200, 300)
+        self.fly_index = 0
 
+   def update(self, game_speed, player):
+        self.fly()
+        if self.fly_index >= 10:
+            self.fly_index = 0
+        return super().update(game_speed, player)
      
    def fly(self):
-      self.image = BIRD[0] if self.fly_index < 2 else BIRD[1]
-      self.bird_rect = self.image.get_rect()
-      self.bird_rect.x = self.X_POS
-      self.bird_rect.y = self.Y_POS
+      #print(self.fly_index)
+      self.image = BIRD[0] if self.fly_index < 5 else BIRD[1]
       self.fly_index += 1

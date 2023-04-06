@@ -31,7 +31,7 @@ class PowerUpManager:
             player.set_power_up(power_up)
            
          power_up.update(game_speed, player)
-         print(player.type)
+        
       # for power_up in self.power_ups:
       #   if power_up.used or power_up.
 
